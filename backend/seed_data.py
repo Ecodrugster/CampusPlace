@@ -5,7 +5,6 @@ from database import SessionLocal, Base, engine
 import models
 from auth import get_password_hash
 
-# Create tables
 Base.metadata.create_all(bind=engine)
 
 db = SessionLocal()

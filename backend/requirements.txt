@@ -1,0 +1,4 @@
+# backend/requirements.txt
+django
+djangorestframework
+django-cors-headers

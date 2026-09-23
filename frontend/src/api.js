@@ -1,11 +1,19 @@
 const API_BASE = '/api';
 
 export const api = {
-  getAuthToken: () => localStorage.getItem('cp_token'),
-  setAuthToken: (token) => localStorage.setItem('cp_token', token),
-  removeAuthToken: () => localStorage.removeItem('cp_token'),
+  getAuthToken: () => {
+    if (typeof window === 'undefined') return null;
+    return localStorage.getItem('cp_token');
+  },
+  setAuthToken: (token) => {
+    if (typeof window !== 'undefined') localStorage.setItem('cp_token', token);
+  },
+  removeAuthToken: () => {
+    if (typeof window !== 'undefined') localStorage.removeItem('cp_token');
+  },
 
   getCurrentUser: () => {
+    if (typeof window === 'undefined') return null;
     try {
       const u = localStorage.getItem('cp_user');
       return u ? JSON.parse(u) : null;
@@ -13,8 +21,12 @@ export const api = {
       return null;
     }
   },
-  setCurrentUser: (user) => localStorage.setItem('cp_user', JSON.stringify(user)),
-  removeCurrentUser: () => localStorage.removeItem('cp_user'),
+  setCurrentUser: (user) => {
+    if (typeof window !== 'undefined') localStorage.setItem('cp_user', JSON.stringify(user));
+  },
+  removeCurrentUser: () => {
+    if (typeof window !== 'undefined') localStorage.removeItem('cp_user');
+  },
 
   async request(endpoint, options = {}) {
     const headers = { ...options.headers };

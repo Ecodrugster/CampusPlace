@@ -1,0 +1,6 @@
+Запуск бэка через .venv:
+.\.venv\Scripts\Activate.ps1
+python manage.py runserver
+
+Frontend: 
+npm run dev

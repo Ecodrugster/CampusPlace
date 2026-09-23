@@ -12,10 +12,18 @@ import './App.css';
 
 export default function App() {
   // Theme state
-  const [theme, setTheme] = useState(() => localStorage.getItem('cp_theme') || 'light');
+  const [theme, setTheme] = useState('light');
 
   // Auth & User
-  const [currentUser, setCurrentUser] = useState(() => api.getCurrentUser());
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('cp_theme') || 'light';
+      setTheme(savedTheme);
+      setCurrentUser(api.getCurrentUser());
+    }
+  }, []);
 
   // Navigation & Search & Filter States
   const [searchQuery, setSearchQuery] = useState('');

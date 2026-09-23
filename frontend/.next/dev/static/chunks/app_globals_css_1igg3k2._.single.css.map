@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/app/globals.css"],"sourcesContent":["/* globals.css for Next.js */\n@import '../src/index.css';\n@import '../src/App.css';\n"],"names":[],"mappings":""}}]
+}

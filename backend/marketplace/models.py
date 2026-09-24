@@ -1,48 +1,38 @@
 from django.db import models
-from django.conf import settings
+from accounts.models import User
+
 
 class Product(models.Model):
-    STATUS_CHOICES = (
-        ('active', 'Активно'),
-        ('reserved', 'Забронировано'),
-        ('sold', 'Продано'),
-    )
+    STATUS_CHOICES = [
+        ("active", "active"),
+        ("sold", "sold"),
+        ("reserved", "reserved"),
+    ]
 
-    CATEGORY_CHOICES = (
-        ('Учебники', 'Учебники'),
-        ('Электроника', 'Электроника'),
-        ('Для комнаты', 'Для комнаты'),
-        ('Одежда', 'Одежда'),
-        ('Спорт и хобби', 'Спорт и хобби'),
-    )
-
-    seller = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='products')
+    id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
-    price = models.DecimalField(max_digits=12, decimal_places=2)
-    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, db_index=True)
+    price = models.FloatField()
+    category = models.CharField(max_length=100, db_index=True)
     condition = models.CharField(max_length=50, default="Отличное")
     location = models.CharField(max_length=255, default="Главный кампус")
-    images = models.JSONField(default=list, blank=True)
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='active')
-    views_count = models.PositiveIntegerField(default=0)
+    images = models.TextField(default="[]")  # JSON-строка со списком URL
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default="active")
+    views_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+
+    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="products", db_column="seller_id")
 
     class Meta:
-        ordering = ['-created_at']
-
-    def __str__(self):
-        return f"{self.title} - {self.price} ₸"
+        db_table = "products"
 
 
 class Favorite(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='favorites')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='favorited_by')
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="favorites", db_column="user_id")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="favorites", db_column="product_id")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('user', 'product')
-
-    def __str__(self):
-        return f"{self.user.email} -> {self.product.title}"
+        db_table = "favorites"
+        unique_together = ("user", "product")

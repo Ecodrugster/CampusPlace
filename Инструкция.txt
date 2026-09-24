@@ -1,6 +1,23 @@
 Запуск бэка через .venv:
 .\.venv\Scripts\Activate.ps1
-python manage.py runserver
+
+conda activate campusplace
+cd backend
+
+pip install -r requirements.txt
+
+# скопировать старую базу для безопасности
+copy campus_place.sqlite3 campus_place_old.sqlite3
+
+# создать новую пустую БД под Django-миграции
+python manage.py makemigrations accounts marketplace
+python manage.py migrate
+
+# импортировать данные из старой базы
+python manage.py import_legacy_data --source campus_place_old.sqlite3
+
+запустить сервер
+python manage.py runserver 8000
 
 Frontend: 
 npm run dev

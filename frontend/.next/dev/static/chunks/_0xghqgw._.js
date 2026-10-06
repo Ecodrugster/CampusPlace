@@ -85,6 +85,8 @@ function App() {
     const [userProducts, setUserProducts] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [favorites, setFavorites] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
+    const [chatModalOpen, setChatModalOpen] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [activeConversation, setActiveConversation] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     // Modals state
     const [authModalOpen, setAuthModalOpen] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [authModalMode, setAuthModalMode] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('login');
@@ -279,7 +281,7 @@ function App() {
                 onSelectCategory: setActiveCategory
             }, void 0, false, {
                 fileName: "[project]/src/App.jsx",
-                lineNumber: 196,
+                lineNumber: 198,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -291,7 +293,7 @@ function App() {
                         user: currentUser
                     }, void 0, false, {
                         fileName: "[project]/src/App.jsx",
-                        lineNumber: 214,
+                        lineNumber: 216,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$FiltersBar$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -307,7 +309,7 @@ function App() {
                         onResetFilters: handleResetFilters
                     }, void 0, false, {
                         fileName: "[project]/src/App.jsx",
-                        lineNumber: 222,
+                        lineNumber: 224,
                         columnNumber: 9
                     }, this),
                     loading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -316,12 +318,12 @@ function App() {
                             children: "Загрузка каталога студенческих товаров..."
                         }, void 0, false, {
                             fileName: "[project]/src/App.jsx",
-                            lineNumber: 238,
+                            lineNumber: 240,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/App.jsx",
-                        lineNumber: 237,
+                        lineNumber: 239,
                         columnNumber: 11
                     }, this) : sortedProducts.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "empty-catalog-state",
@@ -330,14 +332,14 @@ function App() {
                                 children: "Товары не найдены"
                             }, void 0, false, {
                                 fileName: "[project]/src/App.jsx",
-                                lineNumber: 242,
+                                lineNumber: 244,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 children: "Попробуйте изменить поисковый запрос или сбросить фильтры цены и категорий."
                             }, void 0, false, {
                                 fileName: "[project]/src/App.jsx",
-                                lineNumber: 243,
+                                lineNumber: 245,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -346,13 +348,13 @@ function App() {
                                 children: "Сбросить фильтры"
                             }, void 0, false, {
                                 fileName: "[project]/src/App.jsx",
-                                lineNumber: 244,
+                                lineNumber: 246,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/App.jsx",
-                        lineNumber: 241,
+                        lineNumber: 243,
                         columnNumber: 11
                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "products-grid",
@@ -363,18 +365,18 @@ function App() {
                                 isFavorite: favorites.some((f)=>f.id === product.id)
                             }, product.id, false, {
                                 fileName: "[project]/src/App.jsx",
-                                lineNumber: 251,
+                                lineNumber: 253,
                                 columnNumber: 15
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/App.jsx",
-                        lineNumber: 249,
+                        lineNumber: 251,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/App.jsx",
-                lineNumber: 211,
+                lineNumber: 213,
                 columnNumber: 7
             }, this),
             authModalOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$AuthModal$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -383,7 +385,7 @@ function App() {
                 onSuccess: handleAuthSuccess
             }, void 0, false, {
                 fileName: "[project]/src/App.jsx",
-                lineNumber: 265,
+                lineNumber: 267,
                 columnNumber: 9
             }, this),
             selectedProduct && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ProductDetailModal$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -396,7 +398,7 @@ function App() {
                 onEditProduct: handleEditProduct
             }, void 0, false, {
                 fileName: "[project]/src/App.jsx",
-                lineNumber: 273,
+                lineNumber: 275,
                 columnNumber: 9
             }, this),
             createModalOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$CreateProductModal$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -411,7 +413,7 @@ function App() {
                 }
             }, void 0, false, {
                 fileName: "[project]/src/App.jsx",
-                lineNumber: 285,
+                lineNumber: 287,
                 columnNumber: 9
             }, this),
             profileModalOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$UserProfileModal$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -427,17 +429,17 @@ function App() {
                 }
             }, void 0, false, {
                 fileName: "[project]/src/App.jsx",
-                lineNumber: 296,
+                lineNumber: 298,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/App.jsx",
-        lineNumber: 194,
+        lineNumber: 196,
         columnNumber: 5
     }, this);
 }
-_s(App, "6jjcCvDyAgsntZG+EPFoeyXeEl0=");
+_s(App, "WMmWFdEibsBuU4+XmugSjhEg1rk=");
 _c = App;
 var _c;
 __turbopack_context__.k.register(_c, "App");
@@ -550,6 +552,21 @@ const api = {
     logout () {
         this.removeAuthToken();
         this.removeCurrentUser();
+    },
+    // Chat
+    async getConversations () {
+        return this.request('/conversations');
+    },
+    async startConversation (productId) {
+        return this.request('/conversations', {
+            method: 'POST',
+            body: JSON.stringify({
+                product_id: productId
+            })
+        });
+    },
+    async getMessages (conversationId) {
+        return this.request(`/conversations/${conversationId}/messages`);
     },
     // Products
     async getProducts (params = {}) {
@@ -3021,6 +3038,25 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
     const formatPrice = (price)=>{
         return new Intl.NumberFormat('ru-RU').format(price) + ' ₸';
     };
+    const handleStartChat = async ()=>{
+        try {
+            const conv = await api.startConversation(product.id);
+            // открыть ChatWindow с этим conv, например через состояние в App.jsx
+            onOpenChat(conv);
+        } catch (err) {
+            alert(err.message || 'Не удалось начать чат');
+        }
+    };
+    // в JSX:
+    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+        className: "btn btn-primary",
+        onClick: handleStartChat,
+        children: "Написать продавцу"
+    }, void 0, false, {
+        fileName: "[project]/src/components/ProductDetailModal.jsx",
+        lineNumber: 53,
+        columnNumber: 1
+    }, this);
     const isOwner = currentUser && currentUser.id === product.seller_id;
     const isSold = product.status === 'sold';
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3037,12 +3073,12 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                         size: 20
                     }, void 0, false, {
                         fileName: "[project]/src/components/ProductDetailModal.jsx",
-                        lineNumber: 50,
+                        lineNumber: 65,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                    lineNumber: 49,
+                    lineNumber: 64,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3060,7 +3096,7 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                             className: "gallery-active-img"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                            lineNumber: 57,
+                                            lineNumber: 72,
                                             columnNumber: 15
                                         }, this),
                                         images.length > 1 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -3072,12 +3108,12 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                         size: 20
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                        lineNumber: 68,
+                                                        lineNumber: 83,
                                                         columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                    lineNumber: 64,
+                                                    lineNumber: 79,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3087,24 +3123,24 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                         size: 20
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                        lineNumber: 74,
+                                                        lineNumber: 89,
                                                         columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                    lineNumber: 70,
+                                                    lineNumber: 85,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                            lineNumber: 63,
+                                            lineNumber: 78,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                    lineNumber: 56,
+                                    lineNumber: 71,
                                     columnNumber: 13
                                 }, this),
                                 images.length > 1 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3117,23 +3153,23 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                 alt: `Миниатюра ${idx + 1}`
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                lineNumber: 88,
+                                                lineNumber: 103,
                                                 columnNumber: 21
                                             }, this)
                                         }, idx, false, {
                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                            lineNumber: 83,
+                                            lineNumber: 98,
                                             columnNumber: 19
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                    lineNumber: 81,
+                                    lineNumber: 96,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                            lineNumber: 55,
+                            lineNumber: 70,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3147,7 +3183,7 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                             children: product.category
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                            lineNumber: 98,
+                                            lineNumber: 113,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3155,7 +3191,7 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                             children: product.condition
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                            lineNumber: 99,
+                                            lineNumber: 114,
                                             columnNumber: 15
                                         }, this),
                                         isSold && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3163,13 +3199,13 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                             children: "Продано"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                            lineNumber: 100,
+                                            lineNumber: 115,
                                             columnNumber: 26
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                    lineNumber: 97,
+                                    lineNumber: 112,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -3177,7 +3213,7 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                     children: product.title
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                    lineNumber: 103,
+                                    lineNumber: 118,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3188,7 +3224,7 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                             children: formatPrice(product.price)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                            lineNumber: 106,
+                                            lineNumber: 121,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3201,26 +3237,26 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                     color: isFavorite ? '#ef4444' : 'currentColor'
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                    lineNumber: 111,
+                                                    lineNumber: 126,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                     children: isFavorite ? 'В избранном' : 'В избранное'
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                    lineNumber: 112,
+                                                    lineNumber: 127,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                            lineNumber: 107,
+                                            lineNumber: 122,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                    lineNumber: 105,
+                                    lineNumber: 120,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3234,7 +3270,7 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                     className: "meta-icon"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                    lineNumber: 118,
+                                                    lineNumber: 133,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3243,7 +3279,7 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                             children: "Локация:"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                            lineNumber: 119,
+                                                            lineNumber: 134,
                                                             columnNumber: 23
                                                         }, this),
                                                         " ",
@@ -3251,13 +3287,13 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                    lineNumber: 119,
+                                                    lineNumber: 134,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                            lineNumber: 117,
+                                            lineNumber: 132,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3268,7 +3304,7 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                     className: "meta-icon"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                    lineNumber: 122,
+                                                    lineNumber: 137,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3277,7 +3313,7 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                             children: "Опубликовано:"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                            lineNumber: 123,
+                                                            lineNumber: 138,
                                                             columnNumber: 23
                                                         }, this),
                                                         " ",
@@ -3285,13 +3321,13 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                    lineNumber: 123,
+                                                    lineNumber: 138,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                            lineNumber: 121,
+                                            lineNumber: 136,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3302,7 +3338,7 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                     className: "meta-icon"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                    lineNumber: 126,
+                                                    lineNumber: 141,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3311,7 +3347,7 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                             children: "Просмотров:"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                            lineNumber: 127,
+                                                            lineNumber: 142,
                                                             columnNumber: 23
                                                         }, this),
                                                         " ",
@@ -3319,26 +3355,26 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                    lineNumber: 127,
+                                                    lineNumber: 142,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                            lineNumber: 125,
+                                            lineNumber: 140,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                    lineNumber: 116,
+                                    lineNumber: 131,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "detail-divider"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                    lineNumber: 131,
+                                    lineNumber: 146,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3348,27 +3384,27 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                             children: "Описание товара"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                            lineNumber: 134,
+                                            lineNumber: 149,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             children: product.description
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                            lineNumber: 135,
+                                            lineNumber: 150,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                    lineNumber: 133,
+                                    lineNumber: 148,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "detail-divider"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                    lineNumber: 138,
+                                    lineNumber: 153,
                                     columnNumber: 13
                                 }, this),
                                 product.seller && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3380,7 +3416,7 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                             className: "seller-avatar"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                            lineNumber: 143,
+                                            lineNumber: 158,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3393,7 +3429,7 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                             children: product.seller.full_name
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                            lineNumber: 150,
+                                                            lineNumber: 165,
                                                             columnNumber: 21
                                                         }, this),
                                                         product.seller.is_verified && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3403,20 +3439,20 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                                     size: 14
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                                    lineNumber: 153,
+                                                                    lineNumber: 168,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 " Verified Student"
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                            lineNumber: 152,
+                                                            lineNumber: 167,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                    lineNumber: 149,
+                                                    lineNumber: 164,
                                                     columnNumber: 19
                                                 }, this),
                                                 product.seller.university && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3426,20 +3462,20 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                             size: 14
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                            lineNumber: 159,
+                                                            lineNumber: 174,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: product.seller.university
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                            lineNumber: 160,
+                                                            lineNumber: 175,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                    lineNumber: 158,
+                                                    lineNumber: 173,
                                                     columnNumber: 21
                                                 }, this),
                                                 product.seller.dormitory && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3449,32 +3485,32 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                             size: 14
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                            lineNumber: 165,
+                                                            lineNumber: 180,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: product.seller.dormitory
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                            lineNumber: 166,
+                                                            lineNumber: 181,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                    lineNumber: 164,
+                                                    lineNumber: 179,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                            lineNumber: 148,
+                                            lineNumber: 163,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                    lineNumber: 142,
+                                    lineNumber: 157,
                                     columnNumber: 15
                                 }, this),
                                 isOwner ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3488,14 +3524,14 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                     size: 16
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                    lineNumber: 180,
+                                                    lineNumber: 195,
                                                     columnNumber: 19
                                                 }, this),
                                                 " Редактировать"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                            lineNumber: 176,
+                                            lineNumber: 191,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3506,20 +3542,20 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                     size: 16
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                    lineNumber: 186,
+                                                    lineNumber: 201,
                                                     columnNumber: 19
                                                 }, this),
                                                 " Удалить объявление"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                            lineNumber: 182,
+                                            lineNumber: 197,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                    lineNumber: 175,
+                                    lineNumber: 190,
                                     columnNumber: 15
                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "buyer-contact-section",
@@ -3531,14 +3567,14 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                 size: 18
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                lineNumber: 196,
+                                                lineNumber: 211,
                                                 columnNumber: 21
                                             }, this),
                                             " Показать контакты продавца"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                        lineNumber: 192,
+                                        lineNumber: 207,
                                         columnNumber: 19
                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "seller-contacts-box",
@@ -3547,7 +3583,7 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                 children: "Контакты для связи:"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                lineNumber: 200,
+                                                lineNumber: 215,
                                                 columnNumber: 21
                                             }, this),
                                             product.seller?.phone ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
@@ -3558,7 +3594,7 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                         size: 16
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                        lineNumber: 203,
+                                                        lineNumber: 218,
                                                         columnNumber: 25
                                                     }, this),
                                                     " ",
@@ -3566,14 +3602,14 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                lineNumber: 202,
+                                                lineNumber: 217,
                                                 columnNumber: 23
                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "text-muted-sm",
                                                 children: "Телефон не указан"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                lineNumber: 206,
+                                                lineNumber: 221,
                                                 columnNumber: 23
                                             }, this),
                                             product.seller?.telegram ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
@@ -3586,7 +3622,7 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                         size: 16
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                        lineNumber: 216,
+                                                        lineNumber: 231,
                                                         columnNumber: 25
                                                     }, this),
                                                     " Написать в Telegram (",
@@ -3595,7 +3631,7 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                lineNumber: 210,
+                                                lineNumber: 225,
                                                 columnNumber: 23
                                             }, this) : null,
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3606,48 +3642,48 @@ function ProductDetailModal({ product, currentUser, isFavorite, onClose, onToggl
                                                         children: "Совет безопасности:"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                        lineNumber: 221,
+                                                        lineNumber: 236,
                                                         columnNumber: 26
                                                     }, this),
                                                     " Встречайтесь в людных местах кампуса (холл, библиотека или студенческая столовая)."
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                                lineNumber: 220,
+                                                lineNumber: 235,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                        lineNumber: 199,
+                                        lineNumber: 214,
                                         columnNumber: 19
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                                    lineNumber: 190,
+                                    lineNumber: 205,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/ProductDetailModal.jsx",
-                            lineNumber: 96,
+                            lineNumber: 111,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/ProductDetailModal.jsx",
-                    lineNumber: 53,
+                    lineNumber: 68,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/ProductDetailModal.jsx",
-            lineNumber: 47,
+            lineNumber: 62,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/ProductDetailModal.jsx",
-        lineNumber: 46,
+        lineNumber: 61,
         columnNumber: 5
     }, this);
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, MapPin, Eye, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Heart, MapPin, Eye, ShieldCheck, CheckCircle2, Star } from 'lucide-react';
 
 export default function ProductCard({ 
   product, 
@@ -82,6 +82,12 @@ export default function ProductCard({
             {product.seller.is_verified && (
               <span className="verified-micro-badge" title="Студент верифицирован">
                 <ShieldCheck size={13} />
+              </span>
+            )}
+            {product.seller.rating !== undefined && product.seller.rating !== null && (
+              <span className="seller-micro-rating" title={`Рейтинг продавца: ${product.seller.rating}`}>
+                <Star size={12} fill="#f59e0b" color="#f59e0b" />
+                <span>{Number(product.seller.rating).toFixed(1)}</span>
               </span>
             )}
           </div>

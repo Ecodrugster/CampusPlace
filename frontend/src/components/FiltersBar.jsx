@@ -1,7 +1,7 @@
 import React from 'react';
-import { Sparkles, SlidersHorizontal, ArrowUpDown } from 'lucide-react';
+import { Sparkles, ArrowUpDown, GraduationCap, Building } from 'lucide-react';
 
-export default function FiltersBar({ 
+export default function FiltersBar({
   totalFound,
   minPrice,
   maxPrice,
@@ -11,9 +11,21 @@ export default function FiltersBar({
   onSortByChange,
   verifiedOnly,
   onToggleVerifiedOnly,
+  university,
+  onUniversityChange,
+  dormitory,
+  onDormitoryChange,
+  universities = [],
+  dormitories = [],
   onResetFilters
 }) {
-  const hasActiveFilters = minPrice || maxPrice || verifiedOnly || sortBy !== 'newest';
+  const hasActiveFilters =
+    minPrice ||
+    maxPrice ||
+    verifiedOnly ||
+    university ||
+    dormitory ||
+    sortBy !== 'newest';
 
   return (
     <div className="filters-bar-container">
@@ -22,8 +34,7 @@ export default function FiltersBar({
           Найдено: <strong>{totalFound}</strong> объявлений
         </div>
 
-        {/* Verified filter */}
-        <button 
+        <button
           className={`filter-chip ${verifiedOnly ? 'active' : ''}`}
           onClick={onToggleVerifiedOnly}
         >
@@ -33,31 +44,59 @@ export default function FiltersBar({
       </div>
 
       <div className="filters-right">
-        {/* Price Inputs */}
+        <div className="campus-filter-group">
+          <GraduationCap size={14} className="sort-icon" />
+          <select
+            value={university}
+            onChange={(e) => onUniversityChange(e.target.value)}
+            className="sort-select campus-select"
+            title="Университет продавца"
+          >
+            <option value="">Все университеты</option>
+            {universities.map((item) => (
+              <option key={item} value={item}>{item}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="campus-filter-group">
+          <Building size={14} className="sort-icon" />
+          <select
+            value={dormitory}
+            onChange={(e) => onDormitoryChange(e.target.value)}
+            className="sort-select campus-select"
+            title="Общежитие / корпус продавца"
+          >
+            <option value="">Все общаги</option>
+            {dormitories.map((item) => (
+              <option key={item} value={item}>{item}</option>
+            ))}
+          </select>
+        </div>
+
         <div className="price-filter-group">
           <span className="filter-label">Цена (₸):</span>
-          <input 
-            type="number" 
-            placeholder="от" 
-            value={minPrice} 
+          <input
+            type="number"
+            placeholder="от"
+            value={minPrice}
             onChange={(e) => onMinPriceChange(e.target.value)}
             className="filter-input-sm"
           />
           <span className="price-sep">—</span>
-          <input 
-            type="number" 
-            placeholder="до" 
-            value={maxPrice} 
+          <input
+            type="number"
+            placeholder="до"
+            value={maxPrice}
             onChange={(e) => onMaxPriceChange(e.target.value)}
             className="filter-input-sm"
           />
         </div>
 
-        {/* Sort Select */}
         <div className="sort-group">
           <ArrowUpDown size={14} className="sort-icon" />
-          <select 
-            value={sortBy} 
+          <select
+            value={sortBy}
             onChange={(e) => onSortByChange(e.target.value)}
             className="sort-select"
           >

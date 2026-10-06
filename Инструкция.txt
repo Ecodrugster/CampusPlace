@@ -6,6 +6,21 @@ cd backend
 
 pip install -r requirements.txt
 
+# Скопируйте backend/.env.example -> backend/.env и при необходимости заполните SMTP
+# Без SMTP код подтверждения email пишется в консоль сервера (dev fallback)
+
+# По умолчанию: SQLite + InMemory Channels (USE_POSTGRES=False, USE_REDIS=False)
+# Опционально Postgres + Redis через Docker:
+#   docker compose up -d
+#   в backend/.env поставьте USE_POSTGRES=True и USE_REDIS=True
+#   затем: python manage.py migrate
+
+# JWT: access ~30 мин, refresh 7 дней (ротация + blacklist при logout)
+# Фронт хранит cp_token + cp_refresh и сам обновляет access
+
+python manage.py createsuperuser
+
+
 # скопировать старую базу для безопасности
 copy campus_place.sqlite3 campus_place_old.sqlite3
 
@@ -16,8 +31,28 @@ python manage.py migrate
 # импортировать данные из старой базы
 python manage.py import_legacy_data --source campus_place_old.sqlite3
 
+# тесты API
+python manage.py test accounts marketplace reviews chat moderation
+
 запустить сервер
 python manage.py runserver 8000
 
+daphne -b 127.0.0.1 -p 8000 config.asgi:application
+
+# Или просто:
+# run.bat
+
 Frontend: 
 npm run dev
+
+# Antigravity IDE не видит Python после обновления расширения:
+# marketplace ставит universal-билд, на Windows он ломает discovery.
+# Запустите из корня проекта:
+#   powershell -ExecutionPolicy Bypass -File .\fix-antigravity-python.ps1
+# Затем полностью закройте IDE и откройте снова.
+# Автообновление расширений в Antigravity IDE отключено специально.
+
+Модерация: войдите staff/superuser (is_staff=True) -> меню профиля -> «Модерация».
+Верификация email: после регистрации введите код из письма или из лога backend.
+Фильтры каталога: университет и общага продавца (селекты в панели фильтров).
+Каталог: debounce поиска, фильтры в URL (?q=&cat=&sort=&uni=...), сортировка на API, кнопка «Показать ещё».

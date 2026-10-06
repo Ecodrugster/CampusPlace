@@ -59,8 +59,8 @@ export default function AuthModal({ initialMode = 'login', onClose, onSuccess })
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-dialog modal-auth" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay">
+      <div className="modal-dialog modal-auth">
         <button className="modal-close-btn" onClick={onClose}>
           <X size={20} />
         </button>

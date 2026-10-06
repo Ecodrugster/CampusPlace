@@ -1,4 +1,3 @@
-import json
 from rest_framework import serializers
 from .models import Product, Favorite
 from accounts.serializers import UserOutSerializer
@@ -6,7 +5,6 @@ from accounts.serializers import UserOutSerializer
 
 class ProductSerializer(serializers.ModelSerializer):
     seller = UserOutSerializer(read_only=True)
-    images = serializers.SerializerMethodField()
     is_favorite = serializers.SerializerMethodField()
 
     class Meta:
@@ -16,12 +14,6 @@ class ProductSerializer(serializers.ModelSerializer):
             "condition", "location", "images", "status",
             "views_count", "created_at", "seller", "is_favorite",
         ]
-
-    def get_images(self, obj):
-        try:
-            return json.loads(obj.images or "[]")
-        except (ValueError, TypeError):
-            return []
 
     def get_is_favorite(self, obj):
         request = self.context.get("request")
@@ -41,8 +33,9 @@ class ProductCreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate_images(self, value):
-        return json.dumps(value or [])
+        return value or []
 
     def create(self, validated_data):
         request = self.context["request"]
+        validated_data.setdefault("images", [])
         return Product.objects.create(seller=request.user, **validated_data)

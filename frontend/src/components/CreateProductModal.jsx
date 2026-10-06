@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { X, Upload, Plus, Trash2, Tag, MapPin, DollarSign, FileText } from 'lucide-react';
 import { api } from '../api';
+import { PRODUCT_CATEGORIES } from '../catalogCategories';
 
 export default function CreateProductModal({ productToEdit = null, onClose, onSuccess }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [category, setCategory] = useState('Учебники');
+  const [category, setCategory] = useState('Для учёбы');
   const [condition, setCondition] = useState('Отличное');
   const [location, setLocation] = useState('Главный кампус');
   const [images, setImages] = useState([]);
@@ -16,13 +17,7 @@ export default function CreateProductModal({ productToEdit = null, onClose, onSu
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  const categories = [
-    'Учебники',
-    'Электроника',
-    'Для комнаты',
-    'Одежда',
-    'Спорт и хобби'
-  ];
+  const categories = PRODUCT_CATEGORIES;
 
   const conditions = [
     'Новое',
@@ -37,7 +32,7 @@ export default function CreateProductModal({ productToEdit = null, onClose, onSu
       setTitle(productToEdit.title || '');
       setDescription(productToEdit.description || '');
       setPrice(productToEdit.price || '');
-      setCategory(productToEdit.category || 'Учебники');
+      setCategory(productToEdit.category || 'Для учёбы');
       setCondition(productToEdit.condition || 'Отличное');
       setLocation(productToEdit.location || 'Главный кампус');
       setImages(productToEdit.images || []);
@@ -108,8 +103,8 @@ export default function CreateProductModal({ productToEdit = null, onClose, onSu
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-dialog modal-md" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay">
+      <div className="modal-dialog modal-md">
         <button className="modal-close-btn" onClick={onClose}>
           <X size={20} />
         </button>

@@ -34,7 +34,7 @@ class ProductListCreateView(APIView):
         return [permissions.AllowAny()]
 
     def get(self, request):
-        qs = Product.objects.all().order_by("-created_at")
+        qs = Product.objects.select_related("seller").all()
 
         category = request.query_params.get("category")
         if category:
@@ -60,14 +60,53 @@ class ProductListCreateView(APIView):
         if verified_only == "true":
             qs = qs.filter(seller__is_verified=True)
 
+        university = request.query_params.get("university")
+        if university:
+            qs = qs.filter(seller__university__icontains=university.strip())
+
+        dormitory = request.query_params.get("dormitory")
+        if dormitory:
+            qs = qs.filter(seller__dormitory__icontains=dormitory.strip())
+
         status_filter = request.query_params.get("status_filter")
         if status_filter and status_filter != "all":
             qs = qs.filter(status=status_filter)
         elif not status_filter:
             qs = qs.filter(status="active")
 
-        serializer = ProductSerializer(qs, many=True, context={"request": request})
-        return Response({"items": serializer.data, "total": qs.count()})
+        sort = (request.query_params.get("sort") or "newest").strip()
+        sort_map = {
+            "newest": ("-created_at",),
+            "price_asc": ("price", "-created_at"),
+            "price_desc": ("-price", "-created_at"),
+            "popular": ("-views_count", "-created_at"),
+        }
+        qs = qs.order_by(*sort_map.get(sort, sort_map["newest"]))
+
+        total = qs.count()
+
+        try:
+            page = max(1, int(request.query_params.get("page") or 1))
+        except (TypeError, ValueError):
+            page = 1
+        try:
+            page_size = int(request.query_params.get("page_size") or 12)
+        except (TypeError, ValueError):
+            page_size = 12
+        page_size = max(1, min(page_size, 100))
+
+        offset = (page - 1) * page_size
+        page_qs = qs[offset: offset + page_size]
+        serializer = ProductSerializer(page_qs, many=True, context={"request": request})
+        has_more = offset + page_size < total
+
+        return Response({
+            "items": serializer.data,
+            "total": total,
+            "page": page,
+            "page_size": page_size,
+            "has_more": has_more,
+        })
 
     def post(self, request):
         serializer = ProductCreateSerializer(data=request.data, context={"request": request})
@@ -123,7 +162,7 @@ class FavoriteListView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        favs = Favorite.objects.filter(user=request.user).select_related("product")
+        favs = Favorite.objects.filter(user=request.user).select_related("product", "product__seller")
         products = [f.product for f in favs]
         serializer = ProductSerializer(products, many=True, context={"request": request})
         return Response(serializer.data)
@@ -139,3 +178,31 @@ class FavoriteToggleView(APIView):
             return Response({"is_favorite": False})
         Favorite.objects.create(user=request.user, product_id=product_id)
         return Response({"is_favorite": True})
+
+
+class CampusMetaView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        from accounts.models import User
+
+        seller_ids = (
+            Product.objects.filter(status="active")
+            .values_list("seller_id", flat=True)
+            .distinct()
+        )
+        sellers = User.objects.filter(id__in=seller_ids)
+        universities = sorted({
+            (u.university or "").strip()
+            for u in sellers
+            if (u.university or "").strip()
+        })
+        dormitories = sorted({
+            (u.dormitory or "").strip()
+            for u in sellers
+            if (u.dormitory or "").strip()
+        })
+        return Response({
+            "universities": universities,
+            "dormitories": dormitories,
+        })

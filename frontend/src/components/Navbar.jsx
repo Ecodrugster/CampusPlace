@@ -1,16 +1,11 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { 
-  Building2, 
-  Search, 
-  PlusCircle, 
-  Heart, 
-  User as UserIcon, 
-  Sun, 
-  Moon, 
-  LogOut,
-  Sparkles,
-  ShieldCheck
+  Building2, Search, PlusCircle, Heart, User as UserIcon, 
+  Sun, Moon, LogOut, Sparkles, ShieldCheck, MessageCircle, ShieldAlert, MailCheck,
+  LayoutGrid
 } from 'lucide-react';
+import { NAV_CATEGORIES } from '../catalogCategories';
 
 export default function Navbar({ 
   user, 
@@ -24,18 +19,15 @@ export default function Navbar({
   searchQuery,
   onSearchChange,
   activeCategory,
-  onSelectCategory
+  onSelectCategory,
+  onOpenChats,
+  onOpenModeration,
+  onOpenVerifyEmail,
+  unreadCount = 0,
 }) {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
-  const categories = [
-    'Все',
-    'Учебники',
-    'Электроника',
-    'Для комнаты',
-    'Одежда',
-    'Спорт и хобби'
-  ];
+  const categories = NAV_CATEGORIES;
 
   return (
     <header className="navbar-wrapper">
@@ -70,6 +62,11 @@ export default function Navbar({
 
         {/* Right Actions */}
         <div className="nav-actions">
+          <Link href="/catalog" className="btn btn-outline btn-sm nav-catalog-link" title="Дашборд каталога">
+            <LayoutGrid size={15} />
+            <span>Каталог</span>
+          </Link>
+
           {/* Theme toggle */}
           <button 
             className="theme-btn" 
@@ -97,6 +94,17 @@ export default function Navbar({
                 title="Избранное"
               >
                 <Heart size={20} />
+              </button>
+              
+              <button 
+                className="icon-action-btn icon-action-btn-relative" 
+                onClick={onOpenChats}
+                title="Сообщения"
+              >
+                <MessageCircle size={20} />
+                {unreadCount > 0 && (
+                  <span className="nav-unread-badge">{unreadCount > 99 ? '99+' : unreadCount}</span>
+                )}
               </button>
 
               <div className="user-profile-menu-container">
@@ -145,6 +153,31 @@ export default function Navbar({
                         <Heart size={16} />
                         <span>Избранное</span>
                       </button>
+                      <button 
+                        className="dropdown-item"
+                        onClick={() => { setProfileDropdownOpen(false); onOpenChats(); }}
+                      >
+                        <MessageCircle size={16} />
+                        <span>Сообщения</span>
+                      </button>
+                      {!user.is_verified && onOpenVerifyEmail && (
+                        <button
+                          className="dropdown-item"
+                          onClick={() => { setProfileDropdownOpen(false); onOpenVerifyEmail(); }}
+                        >
+                          <MailCheck size={16} />
+                          <span>Подтвердить email</span>
+                        </button>
+                      )}
+                      {user.is_staff && onOpenModeration && (
+                        <button
+                          className="dropdown-item"
+                          onClick={() => { setProfileDropdownOpen(false); onOpenModeration(); }}
+                        >
+                          <ShieldAlert size={16} />
+                          <span>Модерация</span>
+                        </button>
+                      )}
                       <div className="dropdown-divider" />
                       <button 
                         className="dropdown-item dropdown-logout"

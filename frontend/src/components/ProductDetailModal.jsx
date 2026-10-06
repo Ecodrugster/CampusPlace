@@ -14,8 +14,13 @@ import {
   ChevronLeft,
   ChevronRight,
   Trash2,
-  Edit
+  Edit,
+  Star,
+  Flag,
+  Link2,
+  ExternalLink
 } from 'lucide-react';
+import { api } from '../api';
 
 export default function ProductDetailModal({ 
   product, 
@@ -24,10 +29,16 @@ export default function ProductDetailModal({
   onClose, 
   onToggleFavorite,
   onDeleteProduct,
-  onEditProduct
+  onEditProduct,
+  onStartChat,
+  onOpenSellerReviews,
+  onLeaveReview,
+  onReportProduct,
+  onRequireAuth
 }) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showContacts, setShowContacts] = useState(false);
+  const [copyHint, setCopyHint] = useState('');
 
   if (!product) return null;
 
@@ -39,12 +50,40 @@ export default function ProductDetailModal({
     return new Intl.NumberFormat('ru-RU').format(price) + ' ₸';
   };
 
-  const isOwner = currentUser && currentUser.id === product.seller_id;
-  const isSold = product.status === 'sold';
+  const handleStartChat = async () => {
+    if (!currentUser) {
+      alert('Пожалуйста, войдите в аккаунт, чтобы написать продавцу');
+      return;
+    }
+    try {
+      const conv = await api.startConversation(product.id);
+      onStartChat(conv);
+    } catch (err) {
+      alert(err.message || 'Не удалось начать чат');
+    }
+  };
+
+  const sellerId = product.seller_id || product.seller?.id;
+  const isOwner = currentUser && currentUser.id === sellerId;
+  const isSold = product.status === 'sold' || product.status === 'hidden';
+
+  const productPageUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/product/${product.id}`
+    : `/product/${product.id}`;
+
+  const copyProductLink = async () => {
+    try {
+      await navigator.clipboard.writeText(productPageUrl);
+      setCopyHint('Ссылка скопирована');
+      setTimeout(() => setCopyHint(''), 2000);
+    } catch {
+      setCopyHint(productPageUrl);
+    }
+  };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-dialog modal-lg" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay">
+      <div className="modal-dialog modal-lg">
         {/* Close Button */}
         <button className="modal-close-btn" onClick={onClose}>
           <X size={20} />
@@ -102,6 +141,16 @@ export default function ProductDetailModal({
 
             <h1 className="detail-title">{product.title}</h1>
 
+            <div className="detail-share-row">
+              <button type="button" className="btn btn-outline btn-sm" onClick={copyProductLink}>
+                <Link2 size={14} /> Поделиться
+              </button>
+              <a className="btn btn-outline btn-sm" href={`/product/${product.id}`}>
+                <ExternalLink size={14} /> Открыть страницу
+              </a>
+              {copyHint && <span className="copy-hint">{copyHint}</span>}
+            </div>
+
             <div className="detail-price-box">
               <span className="detail-price">{formatPrice(product.price)}</span>
               <button 
@@ -124,7 +173,7 @@ export default function ProductDetailModal({
               </div>
               <div className="detail-meta-item">
                 <Eye size={16} className="meta-icon" />
-                <span><strong>Просмотров:</strong> {product.views_count || 1}</span>
+                <span><strong>Просмотров:</strong> {product.views_count ?? 0}</span>
               </div>
             </div>
 
@@ -147,13 +196,39 @@ export default function ProductDetailModal({
                 />
                 <div className="seller-details">
                   <div className="seller-name-row">
-                    <h4>{product.seller.full_name}</h4>
+                    <h4>
+                      <a className="seller-profile-link" href={`/u/${sellerId}`}>
+                        {product.seller.full_name}
+                      </a>
+                    </h4>
                     {product.seller.is_verified && (
                       <span className="verified-badge-pill">
                         <ShieldCheck size={14} /> Verified Student
                       </span>
                     )}
                   </div>
+                  {product.seller.rating !== undefined && product.seller.rating !== null ? (
+                    <button
+                      type="button"
+                      className="seller-rating-pill-btn"
+                      onClick={() => onOpenSellerReviews && onOpenSellerReviews(product.seller)}
+                      title="Посмотреть отзывы"
+                    >
+                      <Star size={13} fill="#f59e0b" color="#f59e0b" />
+                      <span>{Number(product.seller.rating).toFixed(1)}</span>
+                      <span className="reviews-count-tag">({product.seller.reviews_count || 0})</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="seller-rating-pill-btn"
+                      onClick={() => onOpenSellerReviews && onOpenSellerReviews(product.seller)}
+                      title="Посмотреть отзывы"
+                    >
+                      <Star size={13} color="var(--text-light)" />
+                      <span>Нет отзывов</span>
+                    </button>
+                  )}
                   {product.seller.university && (
                     <div className="seller-subinfo">
                       <GraduationCap size={14} />
@@ -188,9 +263,29 @@ export default function ProductDetailModal({
               </div>
             ) : (
               <div className="buyer-contact-section">
+                <button 
+                  className="btn btn-primary btn-full-width"
+                  onClick={handleStartChat}
+                >
+                  <MessageSquare size={18} /> Написать продавцу
+                </button>
+
+                <button
+                  className="btn btn-review btn-full-width"
+                  onClick={() => {
+                    if (!currentUser) {
+                      alert('Пожалуйста, авторизуйтесь, чтобы оставить отзыв');
+                      return;
+                    }
+                    if (onLeaveReview) onLeaveReview(product);
+                  }}
+                >
+                  <Star size={17} /> Оставить отзыв о продавце
+                </button>
+
                 {!showContacts ? (
                   <button 
-                    className="btn btn-primary btn-full-width"
+                    className="btn btn-outline btn-full-width"
                     onClick={() => setShowContacts(true)}
                   >
                     <Phone size={18} /> Показать контакты продавца
@@ -222,6 +317,21 @@ export default function ProductDetailModal({
                     </div>
                   </div>
                 )}
+
+                <button
+                  type="button"
+                  className="btn btn-report btn-full-width"
+                  onClick={() => {
+                    if (!currentUser) {
+                      if (onRequireAuth) onRequireAuth('login');
+                      else alert('Войдите, чтобы отправить жалобу');
+                      return;
+                    }
+                    if (onReportProduct) onReportProduct(product);
+                  }}
+                >
+                  <Flag size={16} /> Пожаловаться на объявление
+                </button>
               </div>
             )}
           </div>

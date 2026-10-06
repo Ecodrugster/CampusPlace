@@ -1,5 +1,6 @@
 import React from 'react';
-import { BookOpen, Laptop, Home, ShoppingBag, ShieldCheck, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
+import { BookOpen, ShoppingBag, Sparkles, LayoutGrid, ShieldCheck } from 'lucide-react';
 
 export default function HeroBanner({ onSelectCategory, onOpenCreate, user }) {
   return (
@@ -13,21 +14,30 @@ export default function HeroBanner({ onSelectCategory, onOpenCreate, user }) {
           Покупай и продавай вещи прямо в <span className="gradient-text">своем университете</span>
         </h1>
         <p className="hero-subtitle">
-          Учебники, конспекты, техника и всё для комфортной жизни в общежитии. 
-          Быстрая и безопасная передача из рук в руки без комиссии.
+          Для учёбы, одежда, обувь, красота, мебель и аксессуары — всё между студентами
+          без комиссии и с быстрой встречей на кампусе.
         </p>
 
         <div className="hero-quick-tags">
-          <button className="quick-tag-btn" onClick={() => onSelectCategory('Учебники')}>
-            <BookOpen size={15} /> Учебники и лекции
+          <button className="quick-tag-btn" onClick={() => onSelectCategory('Для учёбы')}>
+            <BookOpen size={15} /> Для учёбы
           </button>
-          <button className="quick-tag-btn" onClick={() => onSelectCategory('Электроника')}>
-            <Laptop size={15} /> Электроника
+          <button className="quick-tag-btn" onClick={() => onSelectCategory('Женщинам')}>
+            <Sparkles size={15} /> Женщинам
           </button>
-          <button className="quick-tag-btn" onClick={() => onSelectCategory('Для комнаты')}>
-            <Home size={15} /> Вещи для общежития
+          <button className="quick-tag-btn" onClick={() => onSelectCategory('Мужчинам')}>
+            <ShoppingBag size={15} /> Мужчинам
           </button>
+          <Link href="/catalog" className="quick-tag-btn quick-tag-link">
+            <LayoutGrid size={15} /> Открыть каталог
+          </Link>
         </div>
+
+        {onOpenCreate && (
+          <button type="button" className="btn btn-primary hero-cta-btn" onClick={onOpenCreate}>
+            {user ? 'Разместить объявление' : 'Войти и продать'}
+          </button>
+        )}
       </div>
 
       <div className="hero-banner-graphic">

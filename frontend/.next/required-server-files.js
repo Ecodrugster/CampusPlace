@@ -105,7 +105,7 @@ self.__SERVER_FILES_MANIFEST={
         "transform": "lodash/{{member}}"
       }
     },
-    "outputFileTracingRoot": "C:\\Users\\Singularity\\Desktop\\Программирование\\CampusPlace\\frontend",
+    "outputFileTracingRoot": "C:\\Users\\Singularity\\Desktop\\Программирование\\CampusPlace",
     "allowedDevOrigins": [
       "127.0.0.1",
       "localhost"
@@ -324,9 +324,9 @@ self.__SERVER_FILES_MANIFEST={
     "htmlLimitedBots": "[\\w-]+-Google|Google-[\\w-]+|Chrome-Lighthouse|Slurp|DuckDuckBot|baiduspider|yandex|sogou|bitlybot|tumblr|vkShare|quora link preview|redditbot|ia_archiver|Bingbot|BingPreview|applebot|facebookexternalhit|facebookcatalog|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|SkypeUriPreview|Yeti|googleweblight",
     "bundlePagesRouterDependencies": false,
     "configFileName": "next.config.mjs",
-    "repoRoot": "C:\\Users\\Singularity\\Desktop\\Программирование\\CampusPlace\\frontend",
+    "repoRoot": "C:\\Users\\Singularity\\Desktop\\Программирование\\CampusPlace",
     "turbopack": {
-      "root": "C:\\Users\\Singularity\\Desktop\\Программирование\\CampusPlace\\frontend"
+      "root": "C:\\Users\\Singularity\\Desktop\\Программирование\\CampusPlace"
     },
     "distDirRoot": ".next",
     "_originalRewrites": {
@@ -349,7 +349,7 @@ self.__SERVER_FILES_MANIFEST={
     }
   },
   "appDir": "C:\\Users\\Singularity\\Desktop\\Программирование\\CampusPlace\\frontend",
-  "relativeAppDir": "",
+  "relativeAppDir": "frontend",
   "files": [
     ".next\\package.json",
     ".next\\routes-manifest.json",

@@ -1,11 +1,13 @@
 import os
 from pathlib import Path
 from datetime import timedelta
+from urllib.parse import urlparse, parse_qs
 
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
+load_dotenv(BASE_DIR.parent / ".env.local")
 
 
 def env_bool(name, default=False):
@@ -94,7 +96,26 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 USE_POSTGRES = env_bool("USE_POSTGRES", False)
-if USE_POSTGRES:
+DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
+if DATABASE_URL:
+    parsed_database_url = urlparse(DATABASE_URL)
+    database_query = parse_qs(parsed_database_url.query)
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": parsed_database_url.path.lstrip("/"),
+            "USER": parsed_database_url.username,
+            "PASSWORD": parsed_database_url.password,
+            "HOST": parsed_database_url.hostname,
+            "PORT": str(parsed_database_url.port or 5432),
+            "OPTIONS": {
+                key: values[-1]
+                for key, values in database_query.items()
+                if key in {"sslmode", "channel_binding"}
+            },
+        }
+    }
+elif USE_POSTGRES:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",

@@ -1,5 +1,9 @@
 {
   "/_global-error/page": "/_global-error",
   "/_not-found/page": "/_not-found",
-  "/page": "/"
+  "/cart/page": "/cart",
+  "/catalog/page": "/catalog",
+  "/page": "/",
+  "/product/[id]/page": "/product/[id]",
+  "/u/[id]/page": "/u/[id]"
 }

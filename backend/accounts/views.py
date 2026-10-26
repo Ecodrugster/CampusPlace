@@ -1,6 +1,7 @@
 import logging
 
 from django.contrib.auth import authenticate
+from django.contrib.auth.hashers import check_password
 from django.conf import settings
 from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
@@ -109,7 +110,7 @@ class SendVerificationCodeView(APIView):
             "expires_in_minutes": 15,
         }
         if settings.DEBUG and settings.EMAIL_VERIFICATION_DEV_FALLBACK:
-            payload["dev_code"] = code_obj.code
+            payload["dev_code"] = code_obj.raw_code
         return Response(payload)
 
 
@@ -126,12 +127,17 @@ class ConfirmVerificationCodeView(APIView):
             return Response({"detail": "Введите 6-значный код"}, status=status.HTTP_400_BAD_REQUEST)
 
         code_obj = (
-            EmailVerificationCode.objects.filter(user=user, code=code, is_used=False)
+            EmailVerificationCode.objects.filter(user=user, is_used=False)
             .order_by("-created_at")
             .first()
         )
-        if not code_obj or not code_obj.is_valid():
+        if not code_obj or not code_obj.is_valid() or code_obj.attempts >= 5:
             return Response({"detail": "Неверный или просроченный код"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not check_password(code, code_obj.code):
+            code_obj.attempts += 1
+            code_obj.save(update_fields=["attempts"])
+            return Response({"detail": "Неверный код"}, status=status.HTTP_400_BAD_REQUEST)
 
         code_obj.is_used = True
         code_obj.save(update_fields=["is_used"])

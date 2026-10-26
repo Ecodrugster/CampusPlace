@@ -9,11 +9,20 @@ pip install -r requirements.txt
 # Скопируйте backend/.env.example -> backend/.env и при необходимости заполните SMTP
 # Без SMTP код подтверждения email пишется в консоль сервера (dev fallback)
 
-# По умолчанию: SQLite + InMemory Channels (USE_POSTGRES=False, USE_REDIS=False)
-# Опционально Postgres + Redis через Docker:
-#   docker compose up -d
-#   в backend/.env поставьте USE_POSTGRES=True и USE_REDIS=True
-#   затем: python manage.py migrate
+# База данных:
+# Сейчас локальный PostgreSQL 17 (служба postgresql-x64-17), порт 5435.
+# В backend/.env:
+#   USE_POSTGRES=True
+#   POSTGRES_DB=campusplace
+#   POSTGRES_USER=campusplace
+#   POSTGRES_PASSWORD=campusplace
+#   POSTGRES_HOST=127.0.0.1
+#   POSTGRES_PORT=5435
+# Подключение: "C:\Program Files\PostgreSQL\17\bin\psql.exe" -U campusplace -h 127.0.0.1 -p 5435 -d campusplace
+# После смены БД: python manage.py migrate
+#
+# Fallback SQLite: USE_POSTGRES=False
+# Docker Compose (если установите Docker): docker compose up -d + порт 5432 в .env
 
 # JWT: access ~30 мин, refresh 7 дней (ротация + blacklist при logout)
 # Фронт хранит cp_token + cp_refresh и сам обновляет access
@@ -30,6 +39,11 @@ python manage.py migrate
 
 # импортировать данные из старой базы
 python manage.py import_legacy_data --source campus_place_old.sqlite3
+
+# заполнить демо-данными (студенты, товары по разделам, отзывы, чаты)
+python manage.py seed_demo
+# пароль студентов по умолчанию: student123
+# admin@campusplace.kz / admin123
 
 # тесты API
 python manage.py test accounts marketplace reviews chat moderation
@@ -55,4 +69,15 @@ npm run dev
 Модерация: войдите staff/superuser (is_staff=True) -> меню профиля -> «Модерация».
 Верификация email: после регистрации введите код из письма или из лога backend.
 Фильтры каталога: университет и общага продавца (селекты в панели фильтров).
-Каталог: debounce поиска, фильтры в URL (?q=&cat=&sort=&uni=...), сортировка на API, кнопка «Показать ещё».
+Каталог: debounce поиска, фильтры в URL (?q=&cat=&sort=&uni=...), сортировка на API, бесконечный скролл (подгрузка по 12).
+
+Корзина и бонусы:
+- Страница /cart; иконка корзины в навбаре (badge с числом товаров).
+- Добавление: кнопка «В корзину» на карточке товара (модалка) и на /product/[id].
+- Бонусная скидка покупателя: +5% за каждую завершённую покупку (deal_status=sold), максимум 50%.
+- API: GET/POST /api/cart, DELETE /api/cart/<id>/remove, DELETE /api/cart/clear,
+  POST /api/cart/checkout, GET /api/loyalty.
+- Checkout не списывает деньги: открывает чаты с продавцами и шлёт предложение цены со скидкой.
+- Товары остаются в корзине после «Написать продавцам»; уходят из корзины, когда сделка = sold
+  (покупатель: «Завершить покупку», продавец: «Отметить проданным»).
+- У diana.math@kaznu.kz в демо уже 4 покупки → скидка 20%.

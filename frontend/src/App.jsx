@@ -15,6 +15,7 @@ import SellerReviewsModal from './components/SellerReviewsModal';
 import ReportModal from './components/ReportModal';
 import ModerationModal from './components/ModerationModal';
 import VerifyEmailModal from './components/VerifyEmailModal';
+import useInfiniteScroll from './hooks/useInfiniteScroll';
 import './App.css';
 
 const PAGE_SIZE = 12;
@@ -111,6 +112,7 @@ export default function App() {
   const [hasMore, setHasMore] = useState(false);
   const [userProducts, setUserProducts] = useState([]);
   const [favorites, setFavorites] = useState([]);
+  const [cartCount, setCartCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const skipUrlSyncRef = useRef(true);
@@ -185,15 +187,18 @@ export default function App() {
     if (!currentUser) {
       setFavorites([]);
       setUserProducts([]);
+      setCartCount(0);
       return;
     }
     try {
-      const [favs, userProds] = await Promise.all([
+      const [favs, userProds, cart] = await Promise.all([
         api.getFavorites(),
-        api.getProducts({ seller_id: currentUser.id, status_filter: 'all', page_size: 100 })
+        api.getProducts({ seller_id: currentUser.id, status_filter: 'all', page_size: 100 }),
+        api.getCart().catch(() => ({ count: 0 })),
       ]);
       setFavorites(favs || []);
       setUserProducts(userProds.items || []);
+      setCartCount(cart.count || 0);
     } catch (err) {
       console.error('Ошибка загрузки данных пользователя:', err);
     }
@@ -347,6 +352,10 @@ export default function App() {
     }
   };
 
+  const loadMoreSentinelRef = useInfiniteScroll(handleLoadMore, {
+    enabled: catalogReady && hasMore && !loading && !loadingMore,
+  });
+
   const refreshUnreadCount = async () => {
     if (!currentUser || !api.getAuthToken()) {
       setUnreadCount(0);
@@ -417,9 +426,9 @@ export default function App() {
       }
     })();
     fetchUserData();
-    // Only force verify modal right after registration (code already emailed).
-    if (user && !user.is_verified && authModalMode === 'register') {
-      setVerifyAutoSend(false);
+    // Require email verification after both registration and login.
+    if (user && !user.is_verified) {
+      setVerifyAutoSend(authModalMode !== 'register');
       setVerifyEmailOpen(true);
     }
   };
@@ -435,6 +444,21 @@ export default function App() {
     setFavorites([]);
     setUserProducts([]);
     setUnreadCount(0);
+    setCartCount(0);
+  };
+
+  const handleAddToCart = async (productId) => {
+    if (!currentUser) {
+      handleOpenAuth('login');
+      return;
+    }
+    try {
+      const res = await api.addToCart(productId);
+      setCartCount(res.cart_count || 0);
+      alert(res.created ? 'Добавлено в корзину' : 'Уже в корзине');
+    } catch (err) {
+      alert(err.message || 'Не удалось добавить в корзину');
+    }
   };
 
   // Toggle Favorite
@@ -538,6 +562,7 @@ export default function App() {
         activeCategory={activeCategory}
         onSelectCategory={setActiveCategory}
         unreadCount={unreadCount}
+        cartCount={cartCount}
       />
 
       {currentUser && !currentUser.is_verified && (
@@ -605,18 +630,21 @@ export default function App() {
                 />
               ))}
             </div>
-            {hasMore && (
-              <div className="load-more-wrap">
-                <button
-                  type="button"
-                  className="btn btn-outline load-more-btn"
-                  onClick={handleLoadMore}
-                  disabled={loadingMore}
-                >
-                  {loadingMore ? 'Загрузка...' : `Показать ещё (${products.length} из ${totalCount})`}
-                </button>
-              </div>
-            )}
+            <div className="load-more-wrap" ref={loadMoreSentinelRef}>
+              {loadingMore && (
+                <p className="infinite-scroll-status">Загрузка объявлений...</p>
+              )}
+              {!hasMore && products.length > 0 && (
+                <p className="infinite-scroll-status muted">
+                  Показаны все {totalCount} объявлений
+                </p>
+              )}
+              {hasMore && !loadingMore && (
+                <p className="infinite-scroll-status muted">
+                  {products.length} из {totalCount} — прокрутите ниже
+                </p>
+              )}
+            </div>
           </>
         )}
       </main>
@@ -647,6 +675,7 @@ export default function App() {
           onOpenSellerReviews={(seller) => setReviewsModalSeller(seller)}
           onLeaveReview={(prod) => setLeaveReviewProduct(prod)}
           onReportProduct={(prod) => setReportProduct(prod)}
+          onAddToCart={handleAddToCart}
           onRequireAuth={handleOpenAuth}
         />
       )}
@@ -696,6 +725,11 @@ export default function App() {
           onDealStatusChanged={(updated) => {
             setActiveConversation(updated);
             fetchProducts();
+            if (updated?.deal_status === 'sold') {
+              api.getCart()
+                .then((cart) => setCartCount(cart.count || 0))
+                .catch(() => {});
+            }
           }}
           onMessagesRead={() => refreshUnreadCount()}
         />

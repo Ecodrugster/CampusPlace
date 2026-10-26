@@ -1,5 +1,9 @@
 {
   "/_global-error/page": "app/_global-error/page.js",
   "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js"
+  "/cart/page": "app/cart/page.js",
+  "/catalog/page": "app/catalog/page.js",
+  "/page": "app/page.js",
+  "/product/[id]/page": "app/product/[id]/page.js",
+  "/u/[id]/page": "app/u/[id]/page.js"
 }

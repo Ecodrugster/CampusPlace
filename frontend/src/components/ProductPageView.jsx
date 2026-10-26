@@ -22,6 +22,7 @@ import {
   Flag,
   Link2,
   Building2,
+  ShoppingCart,
 } from 'lucide-react';
 
 export default function ProductPageView({
@@ -37,6 +38,7 @@ export default function ProductPageView({
   onReportProduct,
   onRequireAuth,
   onBack,
+  onAddToCart,
 }) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showContacts, setShowContacts] = useState(false);
@@ -89,9 +91,14 @@ export default function ProductPageView({
             Campus<span className="accent-text">Place</span>
           </span>
         </Link>
-        <button type="button" className="btn btn-outline btn-sm" onClick={onBack}>
-          <ArrowLeft size={14} /> В каталог
-        </button>
+        <div className="product-page-top-actions">
+          <Link href="/cart" className="btn btn-outline btn-sm" title="Корзина">
+            <ShoppingCart size={14} /> Корзина
+          </Link>
+          <button type="button" className="btn btn-outline btn-sm" onClick={onBack}>
+            <ArrowLeft size={14} /> В каталог
+          </button>
+        </div>
       </header>
 
       <nav className="product-page-breadcrumb" aria-label="Хлебные крошки">
@@ -289,6 +296,21 @@ export default function ProductPageView({
             <div className="product-page-actions">
               <button type="button" className="btn btn-primary btn-full-width" onClick={handleStartChat}>
                 <MessageSquare size={18} /> Написать продавцу
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-outline btn-full-width"
+                onClick={() => {
+                  if (!currentUser) {
+                    if (onRequireAuth) onRequireAuth('login');
+                    else alert('Войдите, чтобы добавить в корзину');
+                    return;
+                  }
+                  if (onAddToCart) onAddToCart(product.id);
+                }}
+              >
+                <ShoppingCart size={17} /> В корзину
               </button>
 
               <button

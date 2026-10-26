@@ -110,6 +110,18 @@ export default function ProductPageClient() {
         onLeaveReview={(prod) => setLeaveReviewProduct(prod)}
         onReportProduct={(prod) => setReportProduct(prod)}
         onRequireAuth={() => setAuthOpen(true)}
+        onAddToCart={async (id) => {
+          if (!currentUser) {
+            setAuthOpen(true);
+            return;
+          }
+          try {
+            const res = await api.addToCart(id);
+            alert(res.created ? 'Добавлено в корзину' : 'Уже в корзине');
+          } catch (err) {
+            alert(err.message || 'Не удалось добавить в корзину');
+          }
+        }}
       />
 
       {authOpen && (

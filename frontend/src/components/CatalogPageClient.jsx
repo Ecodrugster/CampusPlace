@@ -11,6 +11,7 @@ import {
   Sun,
   Moon,
   PlusCircle,
+  ShoppingCart,
 } from 'lucide-react';
 import { api } from '../api';
 import { CATALOG_SECTIONS, findSectionByName, findSectionBySlug } from '../catalogCategories';
@@ -18,6 +19,7 @@ import FiltersBar from './FiltersBar';
 import ProductCard from './ProductCard';
 import ProductDetailModal from './ProductDetailModal';
 import AuthModal from './AuthModal';
+import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import '../App.css';
 
 const PAGE_SIZE = 12;
@@ -90,6 +92,7 @@ export default function CatalogPageClient() {
   const [favorites, setFavorites] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [authOpen, setAuthOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
 
   const initialPageRef = useRef(1);
   const firstFetchRef = useRef(true);
@@ -103,6 +106,9 @@ export default function CatalogPageClient() {
     setCurrentUser(api.getCurrentUser());
     if (api.getAuthToken()) {
       api.getMe().then(setCurrentUser).catch(() => {});
+      api.getCart()
+        .then((cart) => setCartCount(cart.count || 0))
+        .catch(() => setCartCount(0));
     }
 
     const parsed = readCatalogUrl();
@@ -256,6 +262,10 @@ export default function CatalogPageClient() {
     }
   };
 
+  const loadMoreSentinelRef = useInfiniteScroll(handleLoadMore, {
+    enabled: ready && hasMore && !loading && !loadingMore,
+  });
+
   const handleToggleFavorite = async (productId) => {
     if (!currentUser) {
       setAuthOpen(true);
@@ -325,6 +335,16 @@ export default function CatalogPageClient() {
             >
               {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             </button>
+            <Link
+              href="/cart"
+              className="icon-action-btn icon-action-btn-relative"
+              title="Корзина и бонусы"
+            >
+              <ShoppingCart size={18} />
+              {cartCount > 0 && (
+                <span className="nav-unread-badge">{cartCount > 99 ? '99+' : cartCount}</span>
+              )}
+            </Link>
             <Link href="/" className="btn btn-outline btn-sm">
               <ArrowLeft size={14} /> На главную
             </Link>
@@ -435,18 +455,21 @@ export default function CatalogPageClient() {
                 />
               ))}
             </div>
-            {hasMore && (
-              <div className="load-more-wrap">
-                <button
-                  type="button"
-                  className="btn btn-outline load-more-btn"
-                  onClick={handleLoadMore}
-                  disabled={loadingMore}
-                >
-                  {loadingMore ? 'Загрузка...' : `Показать ещё (${products.length} из ${totalCount})`}
-                </button>
-              </div>
-            )}
+            <div className="load-more-wrap" ref={loadMoreSentinelRef}>
+              {loadingMore && (
+                <p className="infinite-scroll-status">Загрузка объявлений...</p>
+              )}
+              {!hasMore && products.length > 0 && (
+                <p className="infinite-scroll-status muted">
+                  Показаны все {totalCount} объявлений
+                </p>
+              )}
+              {hasMore && !loadingMore && (
+                <p className="infinite-scroll-status muted">
+                  {products.length} из {totalCount} — прокрутите ниже
+                </p>
+              )}
+            </div>
           </>
         )}
       </main>
@@ -476,6 +499,19 @@ export default function CatalogPageClient() {
           onLeaveReview={() => {}}
           onReportProduct={() => {}}
           onRequireAuth={() => setAuthOpen(true)}
+          onAddToCart={async (id) => {
+            if (!currentUser) {
+              setAuthOpen(true);
+              return;
+            }
+            try {
+              const res = await api.addToCart(id);
+              setCartCount(res.cart_count || 0);
+              alert(res.created ? 'Добавлено в корзину' : 'Уже в корзине');
+            } catch (err) {
+              alert(err.message || 'Не удалось добавить в корзину');
+            }
+          }}
         />
       )}
 

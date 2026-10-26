@@ -37,3 +37,17 @@ class Favorite(models.Model):
     class Meta:
         db_table = "favorites"
         unique_together = ("user", "product")
+
+
+class CartItem(models.Model):
+    """Buyer cart: products from different sellers, used to open deal chats with loyalty price offers."""
+
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cart_items")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="cart_items")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "cart_items"
+        unique_together = ("user", "product")
+        ordering = ["-created_at"]

@@ -51,7 +51,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class EmailVerificationCode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="verification_codes")
-    code = models.CharField(max_length=6)
+    code = models.CharField(max_length=128)
+    attempts = models.PositiveSmallIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField()
     is_used = models.BooleanField(default=False)

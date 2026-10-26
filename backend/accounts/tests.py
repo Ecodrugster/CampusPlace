@@ -2,6 +2,7 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 
 from accounts.models import User, EmailVerificationCode
+from django.contrib.auth.hashers import check_password
 
 
 class AccountsAPITests(APITestCase):
@@ -47,9 +48,10 @@ class AccountsAPITests(APITestCase):
         self.assertEqual(send.status_code, status.HTTP_200_OK)
 
         code_obj = EmailVerificationCode.objects.filter(user=user, is_used=False).latest("created_at")
+        self.assertTrue(check_password(send.data.get("dev_code"), code_obj.code))
         confirm = self.client.post(
             "/api/auth/verify/confirm",
-            {"code": code_obj.code},
+            {"code": send.data.get("dev_code")},
             format="json",
         )
         self.assertEqual(confirm.status_code, status.HTTP_200_OK)

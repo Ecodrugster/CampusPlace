@@ -287,6 +287,31 @@ export const api = {
     });
   },
 
+  // Cart & loyalty
+  async getCart() {
+    return this.request('/cart');
+  },
+
+  async getLoyalty() {
+    return this.request('/loyalty');
+  },
+
+  async addToCart(productId) {
+    return this.request(`/cart/${productId}`, { method: 'POST' });
+  },
+
+  async removeFromCart(productId) {
+    return this.request(`/cart/${productId}/remove`, { method: 'DELETE' });
+  },
+
+  async clearCart() {
+    return this.request('/cart/clear', { method: 'DELETE' });
+  },
+
+  async checkoutCart() {
+    return this.request('/cart/checkout', { method: 'POST' });
+  },
+
   // Reviews & Ratings
   async getSellerReviews(sellerId) {
     return this.request(`/sellers/${sellerId}/reviews`);

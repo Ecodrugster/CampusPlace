@@ -106,6 +106,10 @@ self.__SERVER_FILES_MANIFEST={
       }
     },
     "outputFileTracingRoot": "C:\\Users\\Singularity\\Desktop\\Программирование\\CampusPlace\\frontend",
+    "allowedDevOrigins": [
+      "127.0.0.1",
+      "localhost"
+    ],
     "enablePrerenderSourceMaps": true,
     "cacheComponents": false,
     "cacheLife": {

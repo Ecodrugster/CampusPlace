@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { 
   Building2, Search, PlusCircle, Heart, User as UserIcon, 
   Sun, Moon, LogOut, Sparkles, ShieldCheck, MessageCircle, ShieldAlert, MailCheck,
-  LayoutGrid
+  LayoutGrid, ShoppingCart
 } from 'lucide-react';
 import { NAV_CATEGORIES } from '../catalogCategories';
 
@@ -24,6 +24,7 @@ export default function Navbar({
   onOpenModeration,
   onOpenVerifyEmail,
   unreadCount = 0,
+  cartCount = 0,
 }) {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
@@ -88,6 +89,17 @@ export default function Navbar({
           {/* User / Favorites / Auth */}
           {user ? (
             <div className="user-nav-group">
+              <Link
+                href="/cart"
+                className="icon-action-btn icon-action-btn-relative"
+                title="Корзина и бонусы"
+              >
+                <ShoppingCart size={20} />
+                {cartCount > 0 && (
+                  <span className="nav-unread-badge">{cartCount > 99 ? '99+' : cartCount}</span>
+                )}
+              </Link>
+
               <button 
                 className="icon-action-btn" 
                 onClick={onOpenFavorites}

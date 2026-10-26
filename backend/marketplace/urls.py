@@ -6,6 +6,12 @@ from .views import (
     FavoriteToggleView,
     ImageUploadView,
     CampusMetaView,
+    LoyaltyView,
+    CartView,
+    CartAddView,
+    CartRemoveView,
+    CartClearView,
+    CartCheckoutView,
 )
 
 urlpatterns = [
@@ -21,4 +27,16 @@ urlpatterns = [
     path("favorites/", FavoriteListView.as_view()),
     path("favorites/<int:product_id>", FavoriteToggleView.as_view()),
     path("favorites/<int:product_id>/", FavoriteToggleView.as_view()),
+    path("loyalty", LoyaltyView.as_view()),
+    path("loyalty/", LoyaltyView.as_view()),
+    path("cart", CartView.as_view()),
+    path("cart/", CartView.as_view()),
+    path("cart/checkout", CartCheckoutView.as_view()),
+    path("cart/checkout/", CartCheckoutView.as_view()),
+    path("cart/clear", CartClearView.as_view()),
+    path("cart/clear/", CartClearView.as_view()),
+    path("cart/<int:product_id>", CartAddView.as_view()),
+    path("cart/<int:product_id>/", CartAddView.as_view()),
+    path("cart/<int:product_id>/remove", CartRemoveView.as_view()),
+    path("cart/<int:product_id>/remove/", CartRemoveView.as_view()),
 ]

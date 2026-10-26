@@ -2,15 +2,17 @@ from django.db.models import Q
 from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Product, Favorite
+from .models import Product, Favorite, CartItem
+from .loyalty import loyalty_summary, apply_discount, get_loyalty_discount_percent
 from .serializers import ProductSerializer, ProductCreateSerializer
 import uuid
 from django.core.files.storage import default_storage
 from rest_framework.parsers import MultiPartParser
+from accounts.permissions import IsVerifiedUser
 
 
 class ImageUploadView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsVerifiedUser]
     parser_classes = [MultiPartParser]
 
     def post(self, request):
@@ -30,7 +32,7 @@ class ProductListCreateView(APIView):
 
     def get_permissions(self):
         if self.request.method == "POST":
-            return [permissions.IsAuthenticated()]
+            return [IsVerifiedUser()]
         return [permissions.AllowAny()]
 
     def get(self, request):
@@ -120,7 +122,7 @@ class ProductDetailView(APIView):
 
     def get_permissions(self):
         if self.request.method in ("PUT", "DELETE"):
-            return [permissions.IsAuthenticated()]
+            return [IsVerifiedUser()]
         return [permissions.AllowAny()]
 
     def get_object(self, pk):
@@ -159,7 +161,7 @@ class ProductDetailView(APIView):
 
 
 class FavoriteListView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsVerifiedUser]
 
     def get(self, request):
         favs = Favorite.objects.filter(user=request.user).select_related("product", "product__seller")
@@ -169,7 +171,7 @@ class FavoriteListView(APIView):
 
 
 class FavoriteToggleView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsVerifiedUser]
 
     def post(self, request, product_id):
         fav = Favorite.objects.filter(user=request.user, product_id=product_id).first()
@@ -205,4 +207,178 @@ class CampusMetaView(APIView):
         return Response({
             "universities": universities,
             "dormitories": dormitories,
+        })
+
+
+class LoyaltyView(APIView):
+    permission_classes = [IsVerifiedUser]
+
+    def get(self, request):
+        return Response(loyalty_summary(request.user))
+
+
+class CartView(APIView):
+    permission_classes = [IsVerifiedUser]
+
+    def get(self, request):
+        from chat.models import Conversation
+
+        items = (
+            CartItem.objects.filter(user=request.user)
+            .select_related("product", "product__seller")
+            .order_by("-created_at")
+        )
+        loyalty = loyalty_summary(request.user)
+        discount = loyalty["discount_percent"]
+        product_ids = [item.product_id for item in items]
+        conv_by_product = {
+            c.product_id: c
+            for c in Conversation.objects.filter(
+                buyer=request.user,
+                product_id__in=product_ids,
+            ).only("id", "product_id", "deal_status")
+        }
+        payload_items = []
+        subtotal = 0.0
+        offer_total = 0.0
+        for item in items:
+            product = item.product
+            product_data = ProductSerializer(product, context={"request": request}).data
+            price = float(product.price or 0)
+            offer = apply_discount(price, discount)
+            subtotal += price
+            offer_total += offer
+            conv = conv_by_product.get(product.id)
+            payload_items.append({
+                "id": item.id,
+                "product": product_data,
+                "price": price,
+                "offer_price": offer,
+                "discount_percent": discount,
+                "created_at": item.created_at,
+                "conversation_id": conv.id if conv else None,
+                "deal_status": conv.deal_status if conv else None,
+                "chat_started": bool(conv),
+            })
+        return Response({
+            "items": payload_items,
+            "count": len(payload_items),
+            "subtotal": round(subtotal, 2),
+            "offer_total": round(offer_total, 2),
+            "savings": round(subtotal - offer_total, 2),
+            "loyalty": loyalty,
+        })
+
+
+class CartAddView(APIView):
+    permission_classes = [IsVerifiedUser]
+
+    def post(self, request, product_id):
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return Response({"detail": "Товар не найден"}, status=404)
+        if product.seller_id == request.user.id:
+            return Response({"detail": "Нельзя добавить свой товар в корзину"}, status=400)
+        if product.status not in {"active", "reserved"}:
+            return Response({"detail": "Товар недоступен для покупки"}, status=400)
+
+        item, created = CartItem.objects.get_or_create(user=request.user, product=product)
+        count = CartItem.objects.filter(user=request.user).count()
+        return Response({
+            "in_cart": True,
+            "created": created,
+            "cart_count": count,
+            "item_id": item.id,
+        }, status=201 if created else 200)
+
+
+class CartRemoveView(APIView):
+    permission_classes = [IsVerifiedUser]
+
+    def delete(self, request, product_id):
+        deleted, _ = CartItem.objects.filter(user=request.user, product_id=product_id).delete()
+        count = CartItem.objects.filter(user=request.user).count()
+        return Response({"in_cart": False, "removed": bool(deleted), "cart_count": count})
+
+
+class CartClearView(APIView):
+    permission_classes = [IsVerifiedUser]
+
+    def delete(self, request):
+        deleted, _ = CartItem.objects.filter(user=request.user).delete()
+        return Response({"cleared": deleted, "cart_count": 0})
+
+
+class CartCheckoutView(APIView):
+    """
+    Open/reuse chats with each seller and send a loyalty price offer message.
+    Does not charge money — P2P campus deals stay in chat.
+    """
+    permission_classes = [IsVerifiedUser]
+
+    def post(self, request):
+        from chat.models import Conversation, Message
+        from chat.serializers import ConversationSerializer
+
+        items = (
+            CartItem.objects.filter(user=request.user)
+            .select_related("product", "product__seller")
+        )
+        if not items.exists():
+            return Response({"detail": "Корзина пуста"}, status=400)
+
+        loyalty = loyalty_summary(request.user)
+        discount = loyalty["discount_percent"]
+        conversations = []
+        skipped = []
+        contacted_product_ids = []
+
+        for item in items:
+            product = item.product
+            if product.seller_id == request.user.id:
+                skipped.append({"product_id": product.id, "reason": "own_product"})
+                continue
+            if product.status == "sold":
+                skipped.append({"product_id": product.id, "reason": "sold"})
+                continue
+
+            conv, created = Conversation.objects.get_or_create(
+                product=product,
+                buyer=request.user,
+                seller=product.seller,
+            )
+            # Keep cart items until the deal is completed (sold).
+            # Only send the auto-offer once per new conversation.
+            if created or not conv.messages.exists():
+                offer = apply_discount(product.price, discount)
+                if discount > 0:
+                    text = (
+                        f"Здравствуйте! Хочу купить «{product.title}».\n"
+                        f"У меня бонус-скидка покупателя {discount}% "
+                        f"({loyalty['purchases_count']} завершённых покупок).\n"
+                        f"Предлагаю {offer:,.0f} ₸ вместо {float(product.price):,.0f} ₸. "
+                        f"Можем встретиться на кампусе?"
+                    ).replace(",", " ")
+                else:
+                    text = (
+                        f"Здравствуйте! Хочу купить «{product.title}» за {float(product.price):,.0f} ₸.\n"
+                        f"Пока бонус-скидка 0% — после покупок вырастет до 50%. "
+                        f"Когда удобно встретиться?"
+                    ).replace(",", " ")
+
+                Message.objects.create(
+                    conversation=conv, sender=request.user, text=text, is_read=False
+                )
+            conversations.append(ConversationSerializer(conv, context={"request": request}).data)
+            contacted_product_ids.append(product.id)
+
+        return Response({
+            "ok": True,
+            "loyalty": loyalty,
+            "conversations": conversations,
+            "started": len(conversations),
+            "skipped": skipped,
+            "cart_count": CartItem.objects.filter(user=request.user).count(),
+            "kept_in_cart": True,
         })

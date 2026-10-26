@@ -6,6 +6,8 @@ from .models import User
 class UserOutSerializer(serializers.ModelSerializer):
     rating = serializers.SerializerMethodField()
     reviews_count = serializers.SerializerMethodField()
+    purchases_count = serializers.SerializerMethodField()
+    discount_percent = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -13,6 +15,7 @@ class UserOutSerializer(serializers.ModelSerializer):
             "id", "email", "full_name", "university", "faculty",
             "dormitory", "phone", "telegram", "avatar_url",
             "is_verified", "is_staff", "created_at", "rating", "reviews_count",
+            "purchases_count", "discount_percent",
         ]
 
     def get_rating(self, obj):
@@ -24,6 +27,14 @@ class UserOutSerializer(serializers.ModelSerializer):
     def get_reviews_count(self, obj):
         from reviews.models import Review
         return Review.objects.filter(seller=obj).count()
+
+    def get_purchases_count(self, obj):
+        from marketplace.loyalty import get_completed_purchases_count
+        return get_completed_purchases_count(obj)
+
+    def get_discount_percent(self, obj):
+        from marketplace.loyalty import get_loyalty_discount_percent
+        return get_loyalty_discount_percent(obj)
 
 
 class RegisterSerializer(serializers.ModelSerializer):

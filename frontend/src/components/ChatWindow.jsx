@@ -215,11 +215,22 @@ export default function ChatWindow({
               <div className="chat-deal-buyer-row">
                 <span className="chat-deal-hint">
                   {dealStatus === 'sold'
-                    ? 'Сделка завершена — можете оставить отзыв продавцу'
+                    ? 'Сделка завершена — товар убран из корзины. Можно оставить отзыв.'
                     : dealStatus === 'reserved'
-                      ? 'Товар забронирован за вами'
-                      : 'Дождитесь, пока продавец подтвердит сделку'}
+                      ? 'Товар забронирован. После встречи завершите покупку.'
+                      : 'Товар остаётся в корзине, пока вы не завершите покупку.'}
                 </span>
+                {dealStatus !== 'sold' && dealStatus !== 'cancelled' && (
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm"
+                    disabled={statusLoading}
+                    onClick={() => updateDealStatus('sold')}
+                    title="Подтвердить, что товар куплен"
+                  >
+                    <CheckCircle2 size={14} /> Завершить покупку
+                  </button>
+                )}
                 {dealStatus === 'sold' && onLeaveReview && (
                   <button
                     type="button"

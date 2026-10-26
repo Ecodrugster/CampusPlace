@@ -18,7 +18,8 @@ import {
   Star,
   Flag,
   Link2,
-  ExternalLink
+  ExternalLink,
+  ShoppingCart
 } from 'lucide-react';
 import { api } from '../api';
 
@@ -34,7 +35,8 @@ export default function ProductDetailModal({
   onOpenSellerReviews,
   onLeaveReview,
   onReportProduct,
-  onRequireAuth
+  onRequireAuth,
+  onAddToCart,
 }) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showContacts, setShowContacts] = useState(false);
@@ -268,6 +270,21 @@ export default function ProductDetailModal({
                   onClick={handleStartChat}
                 >
                   <MessageSquare size={18} /> Написать продавцу
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-outline btn-full-width"
+                  onClick={() => {
+                    if (!currentUser) {
+                      if (onRequireAuth) onRequireAuth('login');
+                      else alert('Войдите, чтобы добавить в корзину');
+                      return;
+                    }
+                    if (onAddToCart) onAddToCart(product.id);
+                  }}
+                >
+                  <ShoppingCart size={18} /> В корзину
                 </button>
 
                 <button

@@ -5,10 +5,11 @@ from django.db.models import Avg
 from .models import Review
 from .serializers import ReviewSerializer
 from accounts.models import User
+from accounts.permissions import IsVerifiedUser
 
 
 class ReviewCreateView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsVerifiedUser]
 
     def post(self, request):
         serializer = ReviewSerializer(data=request.data, context={"request": request})

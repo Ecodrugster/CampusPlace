@@ -72,7 +72,24 @@ class ChatAPITests(APITestCase):
         self.product.refresh_from_db()
         self.assertEqual(self.product.status, "reserved")
 
-    def test_buyer_cannot_set_deal_status(self):
+    def test_buyer_cannot_set_reserved(self):
+        conv = Conversation.objects.create(
+            product=self.product,
+            buyer=self.buyer,
+            seller=self.seller,
+        )
+        self.client.force_authenticate(user=self.buyer)
+        resp = self.client.post(
+            f"/api/conversations/{conv.id}/deal-status",
+            {"status": "reserved"},
+            format="json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_buyer_can_complete_purchase_sold(self):
+        from marketplace.models import CartItem
+
+        CartItem.objects.create(user=self.buyer, product=self.product)
         conv = Conversation.objects.create(
             product=self.product,
             buyer=self.buyer,
@@ -84,7 +101,11 @@ class ChatAPITests(APITestCase):
             {"status": "sold"},
             format="json",
         )
-        self.assertEqual(resp.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp.data["deal_status"], "sold")
+        self.product.refresh_from_db()
+        self.assertEqual(self.product.status, "sold")
+        self.assertEqual(CartItem.objects.filter(user=self.buyer, product=self.product).count(), 0)
 
     def test_cannot_chat_with_self(self):
         self.client.force_authenticate(user=self.seller)

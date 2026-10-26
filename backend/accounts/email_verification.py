@@ -1,9 +1,10 @@
 import logging
-import random
+import secrets
 from datetime import timedelta
 
 from django.conf import settings
 from django.core.mail import send_mail
+from django.contrib.auth.hashers import make_password
 from django.utils import timezone
 
 from .models import EmailVerificationCode
@@ -12,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 def generate_code():
-    return f"{random.randint(0, 999999):06d}"
+    return f"{secrets.randbelow(1_000_000):06d}"
 
 
 def can_send_code(user):
@@ -31,11 +32,13 @@ def can_send_code(user):
 
 def create_verification_code(user):
     code = generate_code()
+    EmailVerificationCode.objects.filter(user=user, is_used=False).update(is_used=True)
     obj = EmailVerificationCode.objects.create(
         user=user,
-        code=code,
+        code=make_password(code),
         expires_at=timezone.now() + timedelta(minutes=15),
     )
+    obj.raw_code = code
     return obj
 
 
